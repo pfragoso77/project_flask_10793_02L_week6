@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Desafio Final</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+    <h1>Bem-vindo ao Desafio!</h1>
+    <p>Desafio 1: Além do conhecimento técnico, qual habilidade é importante para um programador ter sucesso?</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <p style="color: {{ 'red' if category == 'error' else 'green' }}">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('home_desafio') }}">
+    {{ form.hidden_tag() }}
+    {{ form.resposta() }}
+    {{ form.submit() }}
+    </form>
+    </body>
+    </html>

@@ -4,13 +4,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from forms import RespostaForm, MensagemForm
 
-#neste passo procedemos à criação da app, atribuimos-lhe o nome e as respostas.
+#neste passo procedemos à criação da app, atribuimos-lhe o nome e as respostas. O desafio está relacionado com o sucesso de ser programador
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'desafio'
-respostas = ['resposta1', 'resposta2', 'resposta3']
+respostas = ['resolução de problemas', 'aprendizagem contínua', 'Boa comunicação']
 mensagens = []
 
- #adicionei um decorador que tem como função criar o caminho até ao nosso site, e tem que estar ligado a uma função. Neste projeto vamos criar 3, correspondentes a 3 desafios.
+ #adicionei um decorador que tem como função criar o caminho até ao nosso site, e estár ligado a uma função. Neste projeto vamos criar 3, correspondentes a 3 desafios.
 @app.route("/", methods=['GET', 'POST'])
 def home_desafio():
     form = RespostaForm()
@@ -36,13 +36,13 @@ def desafio2():
 def desafio3():
     form = RespostaForm()
     if form.validate_on_submit():
-        if form.resposta.data.lower() == respostas[3]:
+        if form.resposta.data.lower() == respostas[2]:
             return redirect(url_for('desafio_final'))
         else:
             flash('Resposta incorreta. Tenta novamente.', 'error')
     return render_template('desafio3.html', form=form)
 
-
+#este é o decorador final de quando o jogar chega ao final. Dá uma mensagem de parabéns a salutar.
 @app.route("/desafio_final", methods=['GET', 'POST'])
 def desafio_final():
     form = MensagemForm()
@@ -53,7 +53,7 @@ def desafio_final():
         flash(f'Mensagem enviada com sucesso! Já existem {len(mensagens)} mensagem(s).', 'success')
     return render_template('desafio_final.html', form=form)
 
-@app.route("/mensagens")
+@app.route("/mensagens") #declara a aplicação
 def ver_mensagens():
     return render_template('mensagens.html', mensagens=mensagens)
 if __name__ == "__main__":

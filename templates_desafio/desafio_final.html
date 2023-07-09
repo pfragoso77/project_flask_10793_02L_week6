@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Chegaste ao final do desafio!</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+<h1>Parabéns! Desafiaste-te e chegaste ao fim, tens o que é preciso para ter sucesso no mundo da programação Python!</h1>
+<img src="{{ url_for('static', filename='desafio.jpg') }}" alt="Desafio">
+<p>Deixa uma mensagem para os futuros jogadores!</p>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<p style="color: {{ 'green' if category == 'success' else 'red' }}">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<form method="POST" action="{{ url_for('desafio') }}">
+{{ form.hidden_tag() }}
+{{ form.mensagem() }}
+{{ form.submit() }}
+</form>
+</body>
+</html>
