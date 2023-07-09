@@ -1,60 +1,62 @@
+#pfragoso
 
-from flask import Flask
+#1º passo confirmar a instalação do Flask e fazer o import. da função render_template e do request
+from flask import Flask, render_template, request, redirect, url_for, flash
+from forms import RespostaForm, MensagemForm
 
-#neste passo procedemos à criação do site e atribuimos-lhe o nome
-app = Flask 
-app.config['Challenge_yourself'] = 'desafio'
-respostas = ['resposta 1', 'resposta 2', 'resposta 3']
-mensagens = []
-
-
-#1º passo confirmar a instalação do Flask e fazer o import
-from flask import Flask, render_template, request
-
+#neste passo procedemos à criação da app, atribuimos-lhe o nome e as respostas.
 app = Flask(__name__)
-app.config['Challenge_yourself'] = 'desafio'
-respostas = ['resposta 1', 'resposta 2', 'resposta 3']
+app.config['SECRET_KEY'] = 'desafio'
+respostas = ['resposta1', 'resposta2', 'resposta3']
 mensagens = []
 
-@app.route("/") #adicionei um decorador que tem como função criar o caminho até ao nosso site, e tem que estar ligado a uma função. Neste projeto vamos criar 3, correspondentes a 3 desafios.
-def home():
-    return render_template('index.html')
-
-@app.route("/desafio1", methods=['GET', 'POST'])
-def desafio1():
-    if request.method == 'POST':
-        resposta = request.form['resposta']
-        if resposta == respostas[0]:
-            mensagem = 'Desafio 1 concluído com sucesso!'
+ #adicionei um decorador que tem como função criar o caminho até ao nosso site, e tem que estar ligado a uma função. Neste projeto vamos criar 3, correspondentes a 3 desafios.
+@app.route("/", methods=['GET', 'POST'])
+def home_desafio():
+    form = RespostaForm()
+    if form.validate_on_submit():
+        if form.resposta.data.lower() == respostas[0]:
+            return redirect(url_for('desafio2'))
         else:
-            mensagem = 'Resposta incorreta! Tente novamente.'
-        mensagens.append(mensagem)
-        return render_template('resultado.html', mensagem=mensagem)
-    return render_template('desafio1.html')
+            flash('Resposta incorreta. Tenta novamente.', 'error')
+    return render_template('home_desafio.html', form=form)
 
 @app.route("/desafio2", methods=['GET', 'POST'])
 def desafio2():
-    if request.method == 'POST':
-        resposta = request.form['resposta']
-        if resposta == respostas[1]:
-            mensagem = 'Desafio 2 concluído com sucesso!'
+    form = RespostaForm()
+    if form.validate_on_submit():
+        if form.resposta.data.lower() == respostas[1]:
+            return redirect(url_for('desafio3'))
         else:
-            mensagem = 'Resposta incorreta! Tente novamente.'
-        mensagens.append(mensagem)
-        return render_template('resultado.html', mensagem=mensagem)
-    return render_template('desafio2.html')
+            flash('Resposta incorreta. Tenta novamente.', 'error')
+    return render_template('desafio2.html', form=form)
+
 
 @app.route("/desafio3", methods=['GET', 'POST'])
 def desafio3():
-    if request.method == 'POST':
-        resposta = request.form['resposta']
-        if resposta == respostas[2]:
-            mensagem = 'Desafio 3 concluído com sucesso!'
+    form = RespostaForm()
+    if form.validate_on_submit():
+        if form.resposta.data.lower() == respostas[3]:
+            return redirect(url_for('desafio_final'))
         else:
-            mensagem = 'Resposta incorreta! Tente novamente.'
-        mensagens.append(mensagem)
-        return render_template('resultado.html', mensagem=mensagem)
-    return render_template('desafio3.html')
+            flash('Resposta incorreta. Tenta novamente.', 'error')
+    return render_template('desafio3.html', form=form)
 
-if __name__ == '__main__':
+
+@app.route("/desafio_final", methods=['GET', 'POST'])
+def desafio_final():
+    form = MensagemForm()
+    if form.validate_on_submit():
+        mensagem = form.mensagem.data
+        mensagens.append(mensagem)
+        print(f'Mensagem recebida: {mensagem}') # Print da mensagem no terminal
+        flash(f'Mensagem enviada com sucesso! Já existem {len(mensagens)} mensagem(s).', 'success')
+    return render_template('desafio_final.html', form=form)
+
+@app.route("/mensagens")
+def ver_mensagens():
+    return render_template('mensagens.html', mensagens=mensagens)
+if __name__ == "__main__":
     app.run()
+
+
